@@ -1,0 +1,237 @@
+@[TOC](文章目录)
+# 1、安装 VSCode 编辑器
+参考[官方网站](https://code.visualstudio.com/docs/setup/linux)，按照下面命令进行安装：
+
+1. 首先进行安装包的下载：
+
+```
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+```
+2. 用yum命令进行安装：
+
+```
+yum check-update
+sudo yum install code
+```
+
+# 2、安装 golang
+## 2.1 安装
+正常安装过程：
+1. 首先正常使用系统包管理工具安装（不是最新版本），使用如下命令：
+
+```
+$ sudo yum install golang
+```
+
+2. 查看安装到哪个目录：
+
+```
+$ rpm -ql golang |more
+```
+
+3. 测试安装是否成功
+
+```
+$ go version
+```
+注：自己在使用系统包安装的时候报错说没有找到可用的软件包，解决方案：1.更换源； 2.下载epel软件源，详见[CentOS7 yum 安装Go环境](https://blog.csdn.net/qq3222505/article/details/99844599)
+
+使用安装包安装：
+1. 下载go安装包（安装包地址可更改）：
+
+```
+$wget https://studygolang.com/dl/golang/go1.10.1.linux-amd64.tar.gz
+```
+
+2. 解压：
+
+```
+$tar -xvf go1.10.1.linux-amd64.tar.gz
+```
+
+## 2.2 设置环境变量
+1. 创建工作空间
+
+```
+$ mkdir $HOME/go
+```
+
+2. 配置环境变量
+
+```
+$sudo gedit /etc/profile		//增加下面俩句
+export GOPATH=$HOME/gowork
+export PATH=$PATH:$GOPATH/bin
+```
+![设置环境变量](https://img-blog.csdnimg.cn/20190911084425793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+3. 执行配置文件，使配置文件生效
+
+```
+$ source /etc/profile
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911084535827.png)
+4. 检查配置
+
+```
+$ go env
+```
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911084152363.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+## 2.3 创建hello world！
+（1）创建源代码目录：
+
+```
+$ mkdir $GOPATH/src/github.com/github-user/hello -p
+```
+结果：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911085044330.png)
+（2）使用vs code创建hello.go
+
+```
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Printf("hello, world\n")
+}
+```
+结果：
+（3）在终端运行：
+
+```
+$ go run hello.go
+```
+
+# 3、安装必要的工具和插件
+
+## 3.1 安装Git客户端
+直接用yum系统管理工具安装就可以了：
+
+```
+$ sudo yum install git
+```
+
+## 3.2 安装go的一些工具
+（1）进入vscode，进行go的工具进行安装，部分没法安装，安装教程进行安装，仍缺少部分工具，查找解决法子：通过git 将相关文件克隆下来，再进行安装，详见：[关于VS code 安装go 插件失败解决方案！！！](https://blog.csdn.net/qq_36546907/article/details/83958134)
+
+（2）安装运行hello world（生成可运行文件）
+
+```
+$ go install github.com/github-user/hello
+$ hello
+```
+
+# 4、安装与运行go tour
+（1）常规安装，安装教程的命令执行：
+
+```
+$ go get github.com/Go-zh/tour/gotour
+$ gotour
+```
+但我虽然生成了可执行文件，但一执行，一直报错。
+（2）另一种安装方式：
+
+```
+$ go get bitbucket.org/mikespook/go-tour-zh/gotour
+$ go install bitbucket.org/mikespook/go-tour-zh/gotour
+$ gotour
+```
+详见：[构建离线Go编程指南——gotour](https://www.cnblogs.com/chijianqiang/archive/2012/11/19/gotour.html)
+# 5、第一个包
+（1）按照之前的教程我们已经设置好工作空间、环境变量、包路径、以及第一个程序hello.go，我们可以执行如下代码来运行该程序：
+
+```
+$ go run $GOPATH/src/github.com/github-user/hello/hello.go
+```
+或者利用 go 工具构建并安装此程序：
+
+```
+$ go install github.com/github-user/hello
+```
+![安装](https://img-blog.csdnimg.cn/20190911185758933.png)
+然后会生成可执行程序，放在工作空间的bin目录，可以直接运行：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911185853410.png)
+```
+$ $GOPATH/bin/hello
+```
+执行结果
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911185607579.png)
+因为设置好了环境变量，可以直接输入二进制文件名：
+
+```
+$ hello
+```
+执行结果：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911185642269.png)
+（2）初始化仓库，执行如下命令：
+```
+$ cd $GOPATH/src/github.com/github-user/hello
+$ git init
+$ git add hello.go
+$ git commit -m "initial commit"
+```
+执行结果：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911190543162.png)
+这里需要按照说明增加你的github账户和邮箱：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911190916302.png)
+（3）编写第一个库，并让hello程序使用：
+创建包目录：
+
+```
+$ mkdir $GOPATH/src/github.com/github-user/stringtil
+```
+接着，在该目录中创建名为 reverse.go 的文件，内容如下：
+
+```
+// stringutil 包含有用于处理字符串的工具函数。
+package stringtil
+
+// Reverse 将其实参字符串以符文为单位左右反转。
+func Reverse(s string) string {
+	r := []rune(s)
+	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
+		r[i], r[j] = r[j], r[i]
+	}
+	return string(r)
+}
+```
+用 go build 命令来测试该包的编译：
+
+```
+$ go build github.com/github-user/stringtil
+```
+修改原来的hello.go文件，如下：
+
+```
+package main
+
+import (
+	"fmt"
+
+	"github.com/user/stringtil"
+)
+
+func main() {
+	fmt.Printf(stringtil.Reverse("hello， world"))
+}
+```
+
+安装hello，stringutil 包也会被自动安装，执行：
+![执行](https://img-blog.csdnimg.cn/20190911193616262.png)
+查看工作空间：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911193450931.png)
+（4）包的命名：
+Go源文件中的第一个语句必须是
+
+```
+package 名称
+```
+这里的 名称 即为导出该包时使用的默认名称，如main。 
+Go的约定是包名为导入路径的最后一个元素：作为 “crypto/rot13” 导入的包应命名为 rot13。
+可执行程序必须使用 package main。（相当于C语言的主程序）；链接成单个二进制文件的所有包，其包名无需是唯一的，只有导入路径（它们的完整文件名）才是唯一的。
+（5）测试：
+Go拥有一个轻量级的测试框架，它由 go test 命令和 testing 包构成。
+按照教程对stringtil进行测试：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190911204421111.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
