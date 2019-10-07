@@ -71,7 +71,7 @@ flag.IntVar(&flagvar, "flagname", 1234, "help message for flagname")
 flag.Var(&flagVal, "name", "help message for flagname
 ```
 B. 解析参数（Parse）:从参数列表中解析定义的flag。参数arguments不包括命令名，即应该是os.Args[1:]。
-4. 代码：
+4. 代码（键入命令时输入参数应为 -s=1 或-s 1的形式，与原本的要求不太一致）：
 
 ```go
 //initial flags
