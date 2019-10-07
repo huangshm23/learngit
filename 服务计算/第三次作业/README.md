@@ -1,5 +1,5 @@
-@[TOC](文章目录)
 # 1、Selpg的介绍
+selpg 允许用户指定从输入文本抽取的页的范围，这些输入文本可以来自文件/标准输入/另一个进程。
 # 2、具体要求
 实现指令的要求请查看该[链接](https://www.ibm.com/developerworks/cn/linux/shell/clutil/index.html)
 # 3、实现具体思路
