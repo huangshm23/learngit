@@ -46,9 +46,9 @@ func FlagInit(args *selpgargs) {
 	flag.Parse()
 	othersArg := flag.Args()
 	if len(othersArg) > 0 {
-		args.inFile = othersArg[0]
+		args.in_filename = othersArg[0]
 	} else {
-		args.inFile = ""
+		args.in_filename = ""
 	}
 }
 
@@ -88,19 +88,19 @@ func process_args(args *selpgargs) {
 	}
 	
 	//检查要操作的文件是否存在
-	if pflag.NArg() > 0 {
-		args.in_filename = pflag.Arg(0)
+	if flag.NArg() > 0 {
+		args.in_filename = flag.Arg(0)
 		/* check if file exists */
-		file, err := os.Open(psa.in_filename)
+		file, err := os.Open(args.in_filename)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s: input file \"%s\" does not exist\n", progname, psa.in_filename)
+			fmt.Fprintf(os.Stderr, "%s: input file \"%s\" does not exist\n", progname, args.in_filename)
 			os.Exit(6)
 		}
 		/* check if file is readable */
-		file, err = os.OpenFile(psa.in_filename, os.O_RDONLY, 0666)
+		file, err = os.OpenFile(args.in_filename, os.O_RDONLY, 0666)
 		if err != nil {
 			if os.IsPermission(err) {
-				fmt.Fprintf(os.Stderr, "%s: input file \"%s\" exists but cannot be read\n", progname, psa.in_filename)
+				fmt.Fprintf(os.Stderr, "%s: input file \"%s\" exists but cannot be read\n", progname, args.in_filename)
 				os.Exit(7)
 			}
 		}
@@ -204,3 +204,4 @@ func main() {
 	process_args(&args)      //处理参数
 	process_input(&args)     //根据用户输入的各个参数进行相应的操作
 }
+
