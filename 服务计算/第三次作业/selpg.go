@@ -53,6 +53,7 @@ func FlagInit(args *selpgargs) {
 }
 
 func process_args(args *selpgargs) {
+	//检查-s 和 -e 参数是否合理
 	if args == nil {
 		fmt.Fprintf(os.Stderr, "\n[Error]The args is nil!Please check your program!\n\n")
 		os.Exit(1)
