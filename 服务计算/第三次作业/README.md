@@ -93,11 +93,12 @@ func FlagInit(args *selpgargs) {
 
 ```go
 func process_args(args *selpgargs) {
+	//检查-s 和 -e 参数是否合理
 	if args == nil {
-        fmt.Fprintf(os.Stderr, "\n[Error]The args is nil!Please check your program!\n\n")
-        os.Exit(1)
-    }
-    if args.start_page == -1 || args.end_page == -1 {
+		fmt.Fprintf(os.Stderr, "\n[Error]The args is nil!Please check your program!\n\n")
+		os.Exit(1)
+    	}
+    	if args.start_page == -1 || args.end_page == -1 {
 		fmt.Fprintf(os.Stderr, "\n[Error]:%s, not enough arguments\n\n", progname)
 		flag.Usage()
 		os.Exit(2)
@@ -126,7 +127,26 @@ func process_args(args *selpgargs) {
 		flag.Usage()
 		os.Exit(5)
 	}
-
+	
+	//检查要操作的文件是否存在
+	if flag.NArg() > 0 {
+		args.in_filename = flag.Arg(0)
+		/* check if file exists */
+		file, err := os.Open(args.in_filename)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: input file \"%s\" does not exist\n", progname, args.in_filename)
+			os.Exit(6)
+		}
+		/* check if file is readable */
+		file, err = os.OpenFile(args.in_filename, os.O_RDONLY, 0666)
+		if err != nil {
+			if os.IsPermission(err) {
+				fmt.Fprintf(os.Stderr, "%s: input file \"%s\" exists but cannot be read\n", progname, args.in_filename)
+				os.Exit(7)
+			}
+		}
+		file.Close()
+	}
 }
 ```
 
