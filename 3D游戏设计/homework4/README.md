@@ -200,7 +200,7 @@ public class Judger : System.Object {
         if (_instance == null) _instance = new Judger ();
         return _instance;
     }
-    public int check(CoastCon fromCoast,CoastCon toCoast,BoatCon boat) {	// 0->not finish, 1->lose, 2->win
+    public int check(Side fromCoast,Side toCoast,BoatCon boat) {	// 0->not finish, 1->lose, 2->win
         int fromP = 0, fromD = 0, toP = 0, toD = 0;
         int[] fromCount = fromCoast.getCharacterNum();
         fromP += fromCount[0];
