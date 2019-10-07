@@ -1,4 +1,3 @@
-@[TOC](文章目录)
 # 1、基本操作演练
 ## 1.1 下载 Fantasy Skybox FREE， 构建自己的游戏场景
 1）下载 Fantasy Skybox FREE：在Unity的Asset Store中找到Fantasy Skybox FREE的材料包，然后下载并且导入自己的项目中。
