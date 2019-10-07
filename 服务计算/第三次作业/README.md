@@ -232,3 +232,5 @@ func process_input(args *selpgargs) {
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007145304107.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
 6. 管道输送至命令“lp -dlp1”：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007145317541.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+# 4主要参考博客：
+[优秀博客](https://blog.csdn.net/wyxwyx469410930/article/details/82952728)
