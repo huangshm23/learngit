@@ -44,14 +44,20 @@ func FlagInit(args *selpgargs) {
 	flag.BoolVar(&args.page_type, "f", false, "page_type")
 	flag.StringVar(&args.print_dest, "d", "", "print_dest")
 	flag.Parse()
+	othersArg := flag.Args()
+	if len(othersArg) > 0 {
+		args.inFile = othersArg[0]
+	} else {
+		args.inFile = ""
+	}
 }
 
 func process_args(args *selpgargs) {
 	if args == nil {
-        fmt.Fprintf(os.Stderr, "\n[Error]The args is nil!Please check your program!\n\n")
-        os.Exit(1)
-    }
-    if args.start_page == -1 || args.end_page == -1 {
+		fmt.Fprintf(os.Stderr, "\n[Error]The args is nil!Please check your program!\n\n")
+		os.Exit(1)
+    	}
+    	if args.start_page == -1 || args.end_page == -1 {
 		fmt.Fprintf(os.Stderr, "\n[Error]:%s, not enough arguments\n\n", progname)
 		flag.Usage()
 		os.Exit(2)
