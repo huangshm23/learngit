@@ -17,7 +17,7 @@ import (
 )
 ```
 
-os，flag包，简单处理参数；bufio处理缓存
+os，flag包（pflag包无法导入，估计是golang的版本过低），简单处理参数；bufio处理缓存
 ## 3.2相关结构体
 按照C语言设置对应结构体和全局变量：
 
