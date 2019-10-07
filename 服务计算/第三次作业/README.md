@@ -88,7 +88,147 @@ func FlagInit(args *selpgargs) {
 
 ## 3.5 process_args函数：
 1. 任务：处理参数
-2. 实现：参考C语言版本以及
+2. 实现：参考C语言版本
+3. 代码：
+
+```go
+func process_args(args *selpgargs) {
+	if args == nil {
+        fmt.Fprintf(os.Stderr, "\n[Error]The args is nil!Please check your program!\n\n")
+        os.Exit(1)
+    }
+    if args.start_page == -1 || args.end_page == -1 {
+		fmt.Fprintf(os.Stderr, "\n[Error]:%s, not enough arguments\n\n", progname)
+		flag.Usage()
+		os.Exit(2)
+	}
+
+	if os.Args[1][0] != '-' || os.Args[1][1] != 's' {
+		fmt.Fprintf(os.Stderr, "\n[Error]:%s, 2st arg should be -sstart_page\n\n", progname)
+		flag.Usage()
+		os.Exit(3)
+	}
+
+	end_index := 2
+	if len(os.Args[1]) == 2 {
+		end_index = 3
+	}
+
+	if os.Args[end_index][0] != '-' || os.Args[end_index][1] != 'e' {
+		fmt.Fprintf(os.Stderr, "\n[Error]:%s, 3st arg should be -eend_page\n\n", progname)
+		flag.Usage()
+		os.Exit(4)
+	}
+
+	if args.start_page > args.end_page || args.start_page < 0 ||
+		args.end_page < 0 {
+		fmt.Fprintln(os.Stderr, "\n[Error]:Invalid arguments")
+		flag.Usage()
+		os.Exit(5)
+	}
+
+}
+```
+
 ## 3.6 process_input函数：
 1. 任务：进行操作
-2. 实现：参考C语言版本以及os/exec 库的用法
+2. 实现：参考C语言版本以及os/exec 库,bufio包的用法
+3. 代码：
+
+```go
+func process_input(args *selpgargs) {
+	var stdin io.WriteCloser
+	var err error
+	var cmd *exec.Cmd
+
+	if args.print_dest != "" {
+		cmd = exec.Command("cat", "-n")
+		stdin, err = cmd.StdinPipe()
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		stdin = nil
+	}
+
+	if flag.NArg() > 0 {
+		args.in_filename = flag.Arg(0)
+		output, err := os.Open(args.in_filename)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		reader := bufio.NewReader(output)
+		if args.page_type {
+			for pageNum := 0; pageNum <= args.end_page; pageNum++ {
+				line, err := reader.ReadString('\f')
+				if err != io.EOF && err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				if err == io.EOF {
+					break
+				}
+				printOrWrite(args, string(line), stdin)
+			}
+		} else {
+			count := 0
+			for {
+				line, _, err := reader.ReadLine()
+				if err != io.EOF && err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				if err == io.EOF {
+					break
+				}
+				if count/args.page_len >= args.start_page {
+					if count/args.page_len > args.end_page {
+						break
+					} else {
+						printOrWrite(args, string(line), stdin)
+					}
+				}
+				count++
+			}
+
+		}
+	} else {
+		scanner := bufio.NewScanner(os.Stdin)
+		count := 0
+		target := ""
+		for scanner.Scan() {
+			line := scanner.Text()
+			line += "\n"
+			if count/args.page_len >= args.start_page {
+				if count/args.page_len <= args.end_page {
+					target += line
+				}
+			}
+			count++
+		}
+		printOrWrite(args, string(target), stdin)
+	}
+
+	if args.print_dest != "" {
+		stdin.Close()
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
+}
+```
+
+## 3.7 测试代码
+1.  简单测试：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007144947695.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+2. 重定向测试
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007144917786.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007145132343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+3. 输出到2.txt：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007145219577.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+4. 错误提示：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007145241905.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+5. 默认行数：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007145304107.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
+6. 管道输送至命令“lp -dlp1”：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20191007145317541.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
