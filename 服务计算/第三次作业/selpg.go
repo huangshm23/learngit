@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"flag"
+	"github.com/spf13/pflag"
 	"fmt"
 	"io"
 	"os"
@@ -37,14 +37,14 @@ func usage() {
 
 //initial flags
 func FlagInit(args *selpgargs) {
-	flag.Usage = usage
-	flag.IntVar(&args.start_page, "s", -1, "Start page.")
-	flag.IntVar(&args.end_page, "e", -1, "End page.")
-	flag.IntVar(&args.page_len, "l", 72, "page_len.")
-	flag.BoolVar(&args.page_type, "f", false, "page_type")
-	flag.StringVar(&args.print_dest, "d", "", "print_dest")
-	flag.Parse()
-	othersArg := flag.Args()
+	pflag.Usage = usage
+	pflag.IntVar(&args.start_page, "s", -1, "Start page.")
+	pflag.IntVar(&args.end_page, "e", -1, "End page.")
+	pflag.IntVar(&args.page_len, "l", 72, "page_len.")
+	pflag.BoolVar(&args.page_type, "f", false, "page_type")
+	pflag.StringVar(&args.print_dest, "d", "", "print_dest")
+	pflag.Parse()
+	othersArg := pflag.Args()
 	if len(othersArg) > 0 {
 		args.inFile = othersArg[0]
 	} else {
@@ -86,7 +86,26 @@ func process_args(args *selpgargs) {
 		flag.Usage()
 		os.Exit(5)
 	}
-
+	
+	//检查要操作的文件是否存在
+	if pflag.NArg() > 0 {
+		args.in_filename = pflag.Arg(0)
+		/* check if file exists */
+		file, err := os.Open(psa.in_filename)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: input file \"%s\" does not exist\n", progname, psa.in_filename)
+			os.Exit(6)
+		}
+		/* check if file is readable */
+		file, err = os.OpenFile(psa.in_filename, os.O_RDONLY, 0666)
+		if err != nil {
+			if os.IsPermission(err) {
+				fmt.Fprintf(os.Stderr, "%s: input file \"%s\" exists but cannot be read\n", progname, psa.in_filename)
+				os.Exit(7)
+			}
+		}
+		file.Close()
+	}
 }
 
 func process_input(args *selpgargs) {
