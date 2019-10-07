@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"github.com/spf13/pflag"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -37,14 +37,14 @@ func usage() {
 
 //initial flags
 func FlagInit(args *selpgargs) {
-	pflag.Usage = usage
-	pflag.IntVar(&args.start_page, "s", -1, "Start page.")
-	pflag.IntVar(&args.end_page, "e", -1, "End page.")
-	pflag.IntVar(&args.page_len, "l", 72, "page_len.")
-	pflag.BoolVar(&args.page_type, "f", false, "page_type")
-	pflag.StringVar(&args.print_dest, "d", "", "print_dest")
-	pflag.Parse()
-	othersArg := pflag.Args()
+	flag.Usage = usage
+	flag.IntVar(&args.start_page, "s", -1, "Start page.")
+	flag.IntVar(&args.end_page, "e", -1, "End page.")
+	flag.IntVar(&args.page_len, "l", 72, "page_len.")
+	flag.BoolVar(&args.page_type, "f", false, "page_type")
+	flag.StringVar(&args.print_dest, "d", "", "print_dest")
+	flag.Parse()
+	othersArg := flag.Args()
 	if len(othersArg) > 0 {
 		args.inFile = othersArg[0]
 	} else {
