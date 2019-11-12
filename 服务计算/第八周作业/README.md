@@ -48,21 +48,22 @@ Ubuntu
 3）测试结果：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191112112026934.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nc2htMjM=,size_16,color_FFFFFF,t_70)
 4）重要参数解释：
-|字段	|含义 |
-|--------|--------|
-|Server Software |服务器软件名|
-|Server Hostname	|服务器主机名|
-|Server Port	|服务器端口 |
+
+| 字段 | 含义 |
+|-----|-----|
+|Server Software|服务器软件名|
+|Server Hostname|服务器主机名|
+|Server Port	|服务器端口  |
 |Document Path	|文件相对路径|
-|Document Length	|文件大小|
-|Concurrency Level	|并发等级|
+|Document Length|文件大小|
+|Concurrency Level|并发等级|
 | Time taken for tests| 测试一共花的时间|
 |Complete requests | 完成的测试数 |
 | Failed requests | 失败的测试数 |
 |Total transferred| 传输的总的字节大小|
 |HTML transferred| 传输的HTML文件大小|
-|Requst per second	|平均每秒的请求个数|
+|Requst per second|平均每秒的请求个数|
 |Time per request| 平均每个请求花的时间|
 |Transfer rate|传输速度|
 |Connection Times	|表内描述了所有的过程中所消耗的最小、中位、最长时间。|
-|Percentage of the requests served within a certain time	|每个百分段的请求完成所需的时间|
+|Percentage of the requests served within a certain time|每个百分段的请求完成所需的时间|
